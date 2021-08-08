@@ -1,0 +1,21 @@
+/* styles for nav bar */
+
+.nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.nav-item {
+    transition: background 0.3s;
+}
+.nav-item:hover {
+    background: white;
+}
+.nav-link {
+    display: block;
+    padding: 5px 20px;
+    text-decoration: none;
+}

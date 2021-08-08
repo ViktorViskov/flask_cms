@@ -8,6 +8,7 @@
 import core.mod_db
 import core.mod_flask
 import core.mod_routes
+import core.mod_render
 import core.mod_handler
 
 
@@ -19,6 +20,7 @@ class Controller:
         # 1 level init
         self.DB_mod = core.mod_db.Mod_db("10.0.0.2", "root", "dbnmjr031193", "flask_test")
         self.Router_mod = core.mod_routes.Router_mod(self)
+        self.Render_mod = core.mod_render.Render_mod(self)
         self.Handler_mod = core.mod_handler.Handler_mod(self)
 
         # 2 level init

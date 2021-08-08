@@ -21,6 +21,9 @@ class Flask_mod:
         # process page
         def catch_all(path):
 
+            # path fixing (if last "/" it must be deleted)
+            path = path[:len(path) - 1] if path[len(path) - 1] == '/' and len(path) > 1 else path
+
             # GET request
             if request.method == "GET":
                 return controller.Router_mod.GET(path)

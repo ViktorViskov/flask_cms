@@ -12,13 +12,27 @@ class Router_mod:
     # for GET requests
     def GET(self, path):
 
-        # load pages list
-        pages = self.controller.DB_mod.IO("SELECT * FROM get_requests WHERE path = '%s'" %path)
-        
-        result = ";".join(",".join(str(item) for item in page) for page in pages)
-        
-        return result
-        return "From routes GET"
+        # open connection to db
+        self.controller.DB_mod.Open()
+
+        # load page info
+        page = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = '%s'" %path)
+
+        # if is not pressent load error page
+        if len(page) != 1:
+            page = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = 'not_found'")
+
+        # handler activate
+        # here must be code for handler
+
+        # load rendered page
+        rendered_page = self.controller.Render_mod.Page(page)
+
+        # close connection to db
+        self.controller.DB_mod.Close()
+
+        # show page
+        return rendered_page
 
     # for POST requests
     def POST(self, path):
