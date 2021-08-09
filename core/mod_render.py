@@ -39,9 +39,20 @@ class Render_mod:
         elif (type == 'dynamic'):
             page_content += self.List_Content(file_path, item_path, sql_name)
 
+        # cookies
+        elif (type == 'cookies'):
+
+            # check cookies
+
+            # create page
+
+            # cookies wrong
+            page_content += self.Content_From_File('./src/static_pages/not_auth.html')
+
+
         # type not available
         else:
-            page_content = self.Content_From_File('./src/static_pages/content_type_wrong.html')
+            page_content += self.Content_From_File('./src/static_pages/content_type_wrong.html')
 
         # replace content
         page_to_print = page_to_print.replace("!!CONTENT!!", page_content)

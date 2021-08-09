@@ -30,7 +30,9 @@ class Flask_mod:
 
             # Post request
             else:
-                return controller.Router_mod.POST(path)
+                return controller.Router_mod.POST(path, request)
 
         # start application
         app.run(app_adress, app_port, app_debug)
+
+        

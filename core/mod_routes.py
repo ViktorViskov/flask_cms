@@ -35,7 +35,12 @@ class Router_mod:
         return rendered_page
 
     # for POST requests
-    def POST(self, path):
-        return "From routes POST"
+    def POST(self, path, request):
+
+        # make action
+        rendered_page = self.controller.POST_mod.Process(path, request)
+        
+        # show page
+        return rendered_page
 
 
