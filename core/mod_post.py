@@ -2,9 +2,9 @@
 # This modul for processing users request
 # 
 
-import re
+# needed libs
 from flask.templating import render_template_string
-
+from flask import make_response
 
 class POST_mod:
 
@@ -14,11 +14,8 @@ class POST_mod:
 
     # process request
     def Process(self, path, request):
-        # open connection to db
-        self.controller.DB_mod.Open()
 
         # make action
-
         # login page
         if path == 'login':
             # user input
@@ -30,11 +27,9 @@ class POST_mod:
 
             # if user is found set cookies
             if len(user) == 1:
-                # import needed lib
-                from flask import make_response
 
                 # create response
-                response_to_client = make_response(render_template_string(self.controller.Router_mod.GET("/")))
+                response_to_client = make_response(render_template_string(self.controller.Router_mod.GET("/", request)))
                 response_to_client.set_cookie('user_name' , login)
                 response_to_client.set_cookie('password' , password)
 
@@ -44,16 +39,14 @@ class POST_mod:
             
             # show error page
             else:
-                page_name = "admin"
+                # show page not found
+                page_to_print = self.controller.Router_mod.GET("admin", request)
 
 
         # path not found
         else:
             # show page not found
-            page_name = "not_found"
-
-        # close connection to db
-        self.controller.DB_mod.Close()
+            page_to_print = self.controller.Router_mod.GET("not_found")
         
 
-        return self.controller.Router_mod.GET(page_name)
+        return page_to_print

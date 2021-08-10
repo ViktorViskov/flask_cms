@@ -11,6 +11,9 @@ class Flask_mod:
     # constructor
     def __init__(self, controller, app_name, app_adress:str, app_port:int, app_debug:bool = False) -> None:
 
+        # controller 
+        self.controller = controller
+
         # create app
         app = Flask(app_name)
 
@@ -24,13 +27,22 @@ class Flask_mod:
             # path fixing (if last "/" it must be deleted)
             path = path[:len(path) - 1] if path[len(path) - 1] == '/' and len(path) > 1 else path
 
+            # open connection to db
+            self.controller.DB_mod.Open()
+
             # GET request
             if request.method == "GET":
-                return controller.Router_mod.GET(path)
+                page_to_print = controller.Router_mod.GET(path, request)
 
             # Post request
             else:
-                return controller.Router_mod.POST(path, request)
+                page_to_print = controller.Router_mod.POST(path, request)
+
+            # close connection to db
+            self.controller.DB_mod.Close()
+
+            # show page
+            return page_to_print
 
         # start application
         app.run(app_adress, app_port, app_debug)

@@ -10,10 +10,7 @@ class Router_mod:
         self.controller = controller
 
     # for GET requests
-    def GET(self, path):
-
-        # open connection to db
-        self.controller.DB_mod.Open()
+    def GET(self, path, request):
 
         # load page info
         page = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = '%s'" %path)
@@ -26,10 +23,7 @@ class Router_mod:
         # here must be code for handler
 
         # load rendered page
-        rendered_page = self.controller.Render_mod.Page(page)
-
-        # close connection to db
-        self.controller.DB_mod.Close()
+        rendered_page = self.controller.Render_mod.Page(page, request)
 
         # show page
         return rendered_page

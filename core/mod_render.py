@@ -11,7 +11,7 @@ class Render_mod:
         pass
 
     # method for building page
-    def Page(self, page):
+    def Page(self, page, request):
 
         # converting data
         path = page[0][0]
@@ -42,12 +42,23 @@ class Render_mod:
         # cookies
         elif (type == 'cookies'):
 
+            # 
             # check cookies
+            # 
 
+            # load from client
+            user_name = request.cookies.get('user_name')
+            password = request.cookies.get('password')
+
+            # check
+            user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (user_name, password))
+
+            if len(user) == 1:
+                page_content += self.Content_From_File(file_path)
             # create page
-
-            # cookies wrong
-            page_content += self.Content_From_File('./src/static_pages/not_auth.html')
+            else:
+                # cookies wrong
+                page_content += self.Content_From_File('./src/static_pages/not_auth.html')
 
 
         # type not available
