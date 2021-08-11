@@ -11,7 +11,7 @@ class Render_mod:
         pass
 
     # method for building page
-    def Page(self, page, request):
+    def Page(self, page):
 
         # converting data
         path = page[0][0]
@@ -47,8 +47,8 @@ class Render_mod:
             # 
 
             # load from client
-            user_name = request.cookies.get('user_name')
-            password = request.cookies.get('password')
+            user_name = self.controller.request.cookies.get('user_name')
+            password = self.controller.request.cookies.get('password')
 
             # check
             user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (user_name, password))

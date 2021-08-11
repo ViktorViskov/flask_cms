@@ -21,6 +21,8 @@ class Flask_mod:
         @app.route('/', defaults={'path': '/'})
         @app.route('/<path:path>', methods=['GET', 'POST'])
 
+        # it must by 2 tables for get and post request 1 its path 2 its action
+
         # process page
         def catch_all(path):
 
@@ -30,13 +32,16 @@ class Flask_mod:
             # open connection to db
             self.controller.DB_mod.Open()
 
+            # write info about request
+            self.controller.request = request
+
             # GET request
             if request.method == "GET":
-                page_to_print = controller.Router_mod.GET(path, request)
+                page_to_print = controller.Router_mod.GET(path)
 
             # Post request
             else:
-                page_to_print = controller.Router_mod.POST(path, request)
+                page_to_print = controller.Router_mod.POST(path)
 
             # close connection to db
             self.controller.DB_mod.Close()

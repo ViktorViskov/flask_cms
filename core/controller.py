@@ -12,8 +12,7 @@ import core.mod_render
 import core.mod_post
 
 
-class Controller:
-    
+class Controller: 
     
     # init modules
     def __init__(self) -> None:
