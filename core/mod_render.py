@@ -53,17 +53,18 @@ class Render_mod:
             # check
             user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (user_name, password))
 
+            # create page
             if len(user) == 1:
                 page_content += self.Content_From_File(file_path)
-            # create page
+
+            # cookies wrong
             else:
-                # cookies wrong
                 page_content += self.Content_From_File('./src/static_pages/not_auth.html')
 
 
         # type not available
         else:
-            page_content += self.Content_From_File('./src/static_pages/content_type_wrong.html')
+            page_content += "%s << Unknown type" % type
 
         # replace content
         page_to_print = page_to_print.replace("!!CONTENT!!", page_content)
@@ -139,7 +140,7 @@ class Render_mod:
 
         # creating items
         for item in items:
-            nav_items += template_item.replace("!!HREF!!", item[2]).replace("!!NAME!!", item[1])
+            nav_items += template_item.replace("!!HREF!!", item[1]).replace("!!NAME!!", item[0])
 
         # return nav menu
         return template_root.replace("!!NAV_ITEMS!!", nav_items)

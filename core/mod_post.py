@@ -16,8 +16,13 @@ class POST_mod:
     def Process(self, path):
 
         # make action
+
+        # not found redirect to page not found
+        if path == 'not_found':
+            page_to_print = make_response(redirect("not_found"))
+        
         # login page
-        if path == 'login':
+        elif path == 'login':
             page_to_print = self.login()
 
         # path not found
@@ -50,8 +55,9 @@ class POST_mod:
             
             # show error page
             else:
-                # show page not found
-                page_to_print = self.controller.Router_mod.GET(self.controller.Render_mod.Content_From_File("./src/static_pages/wrong_credentions.html"))
+                # show page login or password not correct
+                page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = 'auth_fail'")
+                page_to_print = self.controller.Render_mod.Page(page_info)
             
             # response
             return page_to_print
