@@ -2,6 +2,8 @@
 # This modul for creating pages
 # 
 
+from flask import make_response, redirect
+
 class Render_mod:
 
     # constructor
@@ -40,7 +42,7 @@ class Render_mod:
             page_content += self.List_Content(file_path, item_path, sql_name)
 
         # cookies
-        elif (type == 'cookies'):
+        elif (type == 'static_cookies' or type == 'dynamic_cookies'):
 
             # 
             # check cookies
@@ -53,13 +55,23 @@ class Render_mod:
             # check
             user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (user_name, password))
 
-            # create page
+            # correct cookies
             if len(user) == 1:
-                page_content += self.Content_From_File(file_path)
+
+                # check for static page
+                if type == 'static_cookies':
+                    page_content += self.Content_From_File(file_path)
+
+                # list page
+                else:
+                    page_content += self.List_Content(file_path, item_path, sql_name)
+
 
             # cookies wrong
             else:
-                page_content += self.Content_From_File('./src/static_pages/not_auth.html')
+                return make_response(redirect("admin"))
+                # page_path = self.controller.DB_mod.IO("SELECT file_path FROM pages WHERE path = 'not_auth'")[0][0]
+                # page_content += self.Content_From_File(page_path)
 
 
         # type not available

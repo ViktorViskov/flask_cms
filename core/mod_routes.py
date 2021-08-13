@@ -2,6 +2,9 @@
 # This modul for define all web site routes
 # 
 
+# libs
+from flask import make_response, redirect
+
 class Router_mod:
     
 
@@ -32,18 +35,41 @@ class Router_mod:
     # for POST requests
     def POST(self, path):
 
-        # load page
-        action = self.controller.DB_mod.IO("SELECT * FROM post WHERE path = '%s'" %path)
+            # 
+            # check cookies
+            # 
 
-        # if is not pressent load error page
-        if len(action) != 1:
-            page_to_print = self.controller.POST_mod.Process("not_found")
-        
-        # make action
-        else:
-            page_to_print = self.controller.POST_mod.Process(action[0][1])
+            # load from client
+            user_name = self.controller.request.cookies.get('user_name')
+            password = self.controller.request.cookies.get('password')
 
-        # show page
-        return page_to_print
+            # check
+            user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (user_name, password))
+
+            # correct cookies
+            if len(user) == 1 or path == 'login':
+
+                # load page
+                action = self.controller.DB_mod.IO("SELECT * FROM post WHERE path = '%s'" %path)
+
+                # if is not pressent load error page
+                if len(action) != 1:
+                    page_to_print = self.controller.POST_mod.Process("not_found")
+                
+                # make action
+                else:
+                    page_to_print = self.controller.POST_mod.Process(action[0][1])
+
+                # show page
+                return page_to_print
+
+
+            # cookies wrong
+            else:
+                return make_response(redirect("admin"))
+                # page_path = self.controller.DB_mod.IO("SELECT file_path FROM pages WHERE path = 'not_auth'")[0][0]
+                # page_content += self.Content_From_File(page_path)
+
+
 
 
