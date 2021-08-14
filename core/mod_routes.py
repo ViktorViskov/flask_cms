@@ -18,14 +18,19 @@ class Router_mod:
             '/':'/',
             'login':'login',
             'admin':'admin',
-            
+            }
 
+        # static routes for get requests
+        self.static_routes_post = {
+            '/':'/',
+            'login':'login',
+            'admin':'admin',
             }
 
         # static pages
         self.static_pages = {
-            'admin':['admin','Admin panel','static_cookies','./src/admin_panel/admin_panel.html','', ''],
-            'login':['login','Login page','static','./src/admin_panel/admin_login.html','', ''],
+            'admin':['admin','Admin panel','static_cookies','./static/pages/panel.html','', ''],
+            'login':['login','Login page','static','./static/pages/login.html','', ''],
         }
 
     # for GET requests
