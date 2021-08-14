@@ -10,24 +10,63 @@ class Router_mod:
 
     # constuctor
     def __init__(self, controller) -> None:
+        # set link to controller
         self.controller = controller
+
+        # static routes for get requests
+        self.static_routes_get = {
+            '/':'/',
+            'login':'login',
+            'admin':'admin',
+            
+
+            }
+
+        # static pages
+        self.static_pages = {
+            'admin':['admin','Admin panel','static_cookies','./src/admin_panel/admin_panel.html','', ''],
+            'login':['login','Login page','static','./src/admin_panel/admin_login.html','', ''],
+        }
 
     # for GET requests
     def GET(self, path):
 
-        # load page
-        page = self.controller.DB_mod.IO("SELECT * FROM get WHERE path = '%s'" %path)
+        # check for static path
+        if path in self.static_routes_get:
+            page = self.static_routes_get[path]
 
-        # if is not pressent load error page
-        if len(page) != 1:
-            page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = 'not_found'")
-            page_to_print = self.controller.Render_mod.Page(page_info)
-        
-        # show page
+            # check for static page
+            if page in self.static_pages:
+                page_info = [[]]
+                page_info[0] = self.static_pages[page]
+
+            # load from db
+            else:
+                page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = '%s'" %page)
+
+
+        # show page from db
         else:
-            page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = '%s'" %page[0][1])
-            page_to_print = self.controller.Render_mod.Page(page_info)
+            # load page
+            page = self.controller.DB_mod.IO("SELECT * FROM get WHERE path = '%s'" %path)
 
+            # if is not pressent load error page
+            if len(page) != 1:
+                page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = 'not_found'")
+
+            # show page
+            else:
+                # check for static page
+                if page in self.static_pages:
+                    page_info = [[]]
+                    page_info[0] = self.static_pages[page]
+
+                # load from db
+                else:
+                    page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = '%s'" %page[0][1])
+
+        # print page
+        page_to_print = self.controller.Render_mod.Page(page_info)
 
         # return page
         return page_to_print

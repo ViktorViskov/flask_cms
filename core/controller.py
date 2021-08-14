@@ -17,7 +17,7 @@ class Controller:
     # init modules
     def __init__(self) -> None:
         # 1 level init
-        self.DB_mod = core.mod_db.Mod_db("127.0.0.1", "root", "dbnmjr031193", "flask_test")
+        self.DB_mod = core.mod_db.Mod_db("10.0.0.2", "root", "dbnmjr031193", "flask_test")
         self.Router_mod = core.mod_routes.Router_mod(self)
         self.Render_mod = core.mod_render.Render_mod(self)
         self.POST_mod = core.mod_post.POST_mod(self)

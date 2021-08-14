@@ -69,7 +69,7 @@ class Render_mod:
 
             # cookies wrong
             else:
-                return make_response(redirect("admin"))
+                return make_response(redirect("login"))
                 # page_path = self.controller.DB_mod.IO("SELECT file_path FROM pages WHERE path = 'not_auth'")[0][0]
                 # page_content += self.Content_From_File(page_path)
 
