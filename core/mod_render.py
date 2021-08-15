@@ -44,19 +44,8 @@ class Render_mod:
         # cookies
         elif (type == 'static_cookies' or type == 'dynamic_cookies'):
 
-            # 
             # check cookies
-            # 
-
-            # load from client
-            user_name = self.controller.request.cookies.get('user_name')
-            password = self.controller.request.cookies.get('password')
-
-            # check
-            user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (user_name, password))
-
-            # correct cookies
-            if len(user) == 1:
+            if self.controller.user_is_auth:
 
                 # check for static page
                 if type == 'static_cookies':
@@ -70,8 +59,6 @@ class Render_mod:
             # cookies wrong
             else:
                 return make_response(redirect("login"))
-                # page_path = self.controller.DB_mod.IO("SELECT file_path FROM pages WHERE path = 'not_auth'")[0][0]
-                # page_content += self.Content_From_File(page_path)
 
 
         # type not available
@@ -113,8 +100,15 @@ class Render_mod:
         # list item
         list_item = self.Content_From_File(item_path)
 
-        # load sql request from database
-        sql_request = self.controller.DB_mod.IO("SELECT sql_request FROM sql_requests where name = '%s'" % sql_name)[0][0]
+        # load sql request
+        if sql_name in self.controller.Router_mod.static_sql:
+            sql_request = self.controller.Router_mod.static_sql[sql_name]
+
+        # load from db
+        else:
+            sql_request = self.controller.DB_mod.IO("SELECT sql_request FROM sql_requests where name = '%s'" % sql_name)[0][0]
+        
+        # make request
         db_response = self.controller.DB_mod.IO(sql_request)
 
         # creating content list

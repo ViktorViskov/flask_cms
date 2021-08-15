@@ -18,7 +18,7 @@ class Controller:
     def __init__(self) -> None:
         # load config files
         db_config = self.config_processing(open("./configs/db.cfg","r").readlines())
-        user_config = self.config_processing(open("./configs/user.cfg","r").readlines())
+        self.user_config = self.config_processing(open("./configs/user.cfg","r").readlines())
         main_config = self.config_processing(open("./configs/main.cfg","r").readlines())       
 
         # 1 level init
@@ -29,11 +29,6 @@ class Controller:
 
         # 2 level init
         self.Flask_mod = core.mod_flask.Flask_mod(self,"Test application", "0.0.0.0", 5000, True)
-
-        # example
-        # self.DB_mod.IO("insert into test values (45, 'Some name')", True)
-        # print (self.DB_mod.IO("Select * from test"))
-        # example
 
     def config_processing(self, config_file_lines):
 

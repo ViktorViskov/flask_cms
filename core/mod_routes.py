@@ -18,19 +18,74 @@ class Router_mod:
             '/':'/',
             'login':'login',
             'admin':'admin',
+            'nav_menu':'nav_menu',
+            'show_page':'show_page',
+            'hide_page':'hide_page',
+            'sql_edith':'sql_edith',
+            'page_create':'page_create',
+            'page_delete':'page_delete',
             }
 
         # static routes for get requests
         self.static_routes_post = {
-            '/':'/',
-            'login':'login',
-            'admin':'admin',
+            'login':{
+                'action':'login',
+                'cookies':False
+                },
+            'create_nav_menu_item':{
+                'action':'create_nav_menu_item',
+                'cookies':True
+                },
+            'delete_nav_menu_item':{
+                'action':'delete_nav_menu_item',
+                'cookies':True
+                },
+            'show_page':{
+                'action':'show_page',
+                'cookies':True
+                },
+            'hide_page':{
+                'action':'hide_page',
+                'cookies':True
+                },
+            'sql_create':{
+                'action':'sql_create',
+                'cookies':True
+                },
+            'sql_delete':{
+                'action':'sql_delete',
+                'cookies':True
+                },
+            'page_create':{
+                'action':'page_create',
+                'cookies':True
+                },
+            'page_delete':{
+                'action':'page_delete',
+                'cookies':True
+                },
             }
 
         # static pages
         self.static_pages = {
             'admin':['admin','Admin panel','static_cookies','./static/pages/panel.html','', ''],
             'login':['login','Login page','static','./static/pages/login.html','', ''],
+            'auth_fail':['auth_fail','Login or password not correct','static','./static/pages/auth_fail.html','', ''],
+            'nav_menu':['nav_menu','Edith navigation menu','dynamic_cookies','./static/pages/nav_menu_edith.html','./static/pages/nav_menu_edith_block.html', 'Nav items'],
+            'show_page':['show_page','Menu for enabling','dynamic_cookies','./static/pages/show_page.html','./static/pages/show_page_block.html', 'Pages'],
+            'hide_page':['hide_page','Menu for disabling pages','dynamic_cookies','./static/pages/hide_page.html','./static/pages/hide_page_block.html', 'Get items'],
+            'sql_edith':['sql_edith','Menu sql edithor','dynamic_cookies','./static/pages/sql_edith.html','./static/pages/sql_edith_block.html', 'Sql items'],
+            'page_create':['page_create','Menu sql edithor','static_cookies','./static/pages/page_create.html','', ''],
+            'page_delete':['page_delete','Menu sql edithor','dynamic_cookies','./static/pages/page_delete.html','./static/pages/page_delete_block.html', 'Pages'],
+            
+        }
+
+        # static sql requests
+        self.static_sql = {
+            'Get items':'SELECT * FROM get',
+            'Nav items':'SELECT * FROM nav_menu',
+            'Sql items':'SELECT * FROM sql_requests',
+            'Pages':'SELECT * FROM pages',
         }
 
     # for GET requests
@@ -62,7 +117,7 @@ class Router_mod:
             # show page
             else:
                 # check for static page
-                if page in self.static_pages:
+                if page[0][0] in self.static_pages:
                     page_info = [[]]
                     page_info[0] = self.static_pages[page]
 
@@ -79,40 +134,35 @@ class Router_mod:
     # for POST requests
     def POST(self, path):
 
-            # 
-            # check cookies
-            # 
+            # check for path is available
+            if path in self.static_routes_post:
 
-            # load from client
-            user_name = self.controller.request.cookies.get('user_name')
-            password = self.controller.request.cookies.get('password')
+                # load action
+                action = self.static_routes_post[path]['action']
 
-            # check
-            user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (user_name, password))
+                # cookies
+                need_cookies = self.static_routes_post[path]['cookies']
 
-            # correct cookies
-            if len(user) == 1 or path == 'login':
+                # check for cookies and user is auth
+                if need_cookies:
+                    # exec script
+                    if self.controller.user_is_auth:
+                        page_to_print = self.controller.POST_mod.Process(action)
 
-                # load page
-                action = self.controller.DB_mod.IO("SELECT * FROM post WHERE path = '%s'" %path)
+                    # redirect
+                    else:
+                        page_to_print = make_response(redirect("login"))
 
-                # if is not pressent load error page
-                if len(action) != 1:
-                    page_to_print = self.controller.POST_mod.Process("not_found")
-                
-                # make action
+                # exec action
                 else:
-                    page_to_print = self.controller.POST_mod.Process(action[0][1])
+                    page_to_print = self.controller.POST_mod.Process(action)
 
-                # show page
-                return page_to_print
-
-
-            # cookies wrong
+            # redirect to page not foound
             else:
-                return make_response(redirect("admin"))
-                # page_path = self.controller.DB_mod.IO("SELECT file_path FROM pages WHERE path = 'not_auth'")[0][0]
-                # page_content += self.Content_From_File(page_path)
+                page_to_print = make_response(redirect("not_found"))
+
+            # return page
+            return page_to_print
 
 
 

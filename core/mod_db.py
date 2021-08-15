@@ -36,6 +36,7 @@ class Mod_db:
         # accept changes
         if accept_changes:
             self.connection.commit()
-
-        # return data
-        return self.cursor.fetchall()
+        
+        else:
+            # return data
+            return self.cursor.fetchall()

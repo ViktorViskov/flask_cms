@@ -16,13 +16,9 @@ class POST_mod:
     def Process(self, action):
 
         # make action
-
-        # not found redirect to page not found
-        if action == 'not_found':
-            page_to_print = make_response(redirect("not_found"))
-        
+       
         # login page
-        elif action == 'login':
+        if action == 'login':
             page_to_print = self.login()
 
         # create nav menu item 
@@ -34,31 +30,23 @@ class POST_mod:
             page_to_print = self.delete_nav_menu_item()
 
         # create get_request item 
-        elif action == 'create_get_request_item':
+        elif action == 'show_page':
             page_to_print = self.create_get_request_item()
 
         # delete get_request item 
-        elif action == 'delete_get_request_item':
+        elif action == 'hide_page':
             page_to_print = self.delete_get_request_item()
         
-        # create get_request item 
-        elif action == 'create_post_request_item':
-            page_to_print = self.create_post_request_item()
-
-        # delete get_request item 
-        elif action == 'delete_post_request_item':
-            page_to_print = self.delete_post_request_item()
-        
         # create sql_request item 
-        elif action == 'create_sql_request_item':
+        elif action == 'sql_create':
             page_to_print = self.create_sql_request_item()
 
         # delete sql_request item 
-        elif action == 'delete_sql_request_item':
+        elif action == 'sql_delete':
             page_to_print = self.delete_sql_request_item()
 
         # create page file
-        elif action == 'create_page':
+        elif action == 'page_create':
             page_to_print = self.create_page()
 
         # path not found
@@ -74,14 +62,14 @@ class POST_mod:
         login = self.controller.request.form['user_name']
         password = self.controller.request.form['password']
 
-        # search user in database
-        user = self.controller.DB_mod.IO("SELECT * FROM admins_credentions WHERE user_name = '%s' AND password = '%s'" % (login, password))
+        # check user credentions
+        user_credentions_correct = True if self.controller.user_config['user_name'].strip() == login.strip() and self.controller.user_config['user_password'].strip() == password.strip() else False
 
         # if user is found set cookies
-        if len(user) == 1:
+        if user_credentions_correct:
 
             # create response
-            response_to_client = make_response(redirect("/admin_panel"))
+            response_to_client = make_response(redirect("/admin"))
             response_to_client.set_cookie('user_name' , login)
             response_to_client.set_cookie('password' , password)
 
@@ -92,7 +80,8 @@ class POST_mod:
         # show error page
         else:
             # show page login or password not correct
-            page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = 'auth_fail'")
+            page_info = [[]]
+            page_info[0] = self.controller.Router_mod.static_pages['auth_fail']
             page_to_print = self.controller.Render_mod.Page(page_info)
         
         # response
@@ -108,7 +97,7 @@ class POST_mod:
         self.controller.DB_mod.IO("INSERT INTO nav_menu VALUES ('%s','%s')" % (page_name, page_href), True)
 
         # redirect to nav menu edith
-        return make_response(redirect("/menu_edith"))
+        return make_response(redirect("/nav_menu"))
 
     # metod for delete nav menu item
     def delete_nav_menu_item(self):
@@ -119,7 +108,7 @@ class POST_mod:
         self.controller.DB_mod.IO("DELETE FROM nav_menu WHERE title = '%s'" % (page_name), True)
 
         # redirect to nav menu edith
-        return make_response(redirect("/menu_edith"))
+        return make_response(redirect("/nav_menu"))
 
     # metod for create get request item
     def create_get_request_item(self):
@@ -131,41 +120,18 @@ class POST_mod:
         self.controller.DB_mod.IO("INSERT INTO get VALUES ('%s','%s')" % (path, page), True)
 
         # redirect to nav menu edith
-        return make_response(redirect("/get_edith"))
+        return make_response(redirect("/show_page"))
 
     # metod for delete get request item
     def delete_get_request_item(self):
         # user input
-        page_name = self.controller.request.form['path']
+        page_path = self.controller.request.form['path']
 
         # make request to db
-        self.controller.DB_mod.IO("DELETE FROM get WHERE path = '%s'" % (page_name), True)
+        self.controller.DB_mod.IO("DELETE FROM get WHERE path = '%s'" % (page_path), True)
 
         # redirect to nav menu edith
-        return make_response(redirect("/get_edith"))
-
-    # metod for create post request item
-    def create_post_request_item(self):
-        # user input
-        path = self.controller.request.form['path']
-        page = self.controller.request.form['action']
-
-        # make request to db
-        self.controller.DB_mod.IO("INSERT INTO post VALUES ('%s','%s')" % (path, page), True)
-
-        # redirect to nav menu edith
-        return make_response(redirect("/post_edith"))
-
-    # metod for delete post request item
-    def delete_post_request_item(self):
-        # user input
-        page_name = self.controller.request.form['path']
-
-        # make request to db
-        self.controller.DB_mod.IO("DELETE FROM post WHERE path = '%s'" % (page_name), True)
-
-        # redirect to nav menu edith
-        return make_response(redirect("/post_edith"))
+        return make_response(redirect("/hide_page"))
 
     # metod for create sql request item
     def create_sql_request_item(self):

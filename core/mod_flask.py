@@ -35,6 +35,17 @@ class Flask_mod:
             # write info about request
             self.controller.request = request
 
+            # 
+            # check cookies
+            # 
+
+            # load from client
+            cookies_user_name = request.cookies.get('user_name')
+            cookies_password = request.cookies.get('password')
+
+            # check credentions
+            self.controller.user_is_auth =True if self.controller.user_config['user_name'].strip() == cookies_user_name and self.controller.user_config['user_password'].strip() == cookies_password else False
+
             # GET request
             if request.method == "GET":
                 page_to_print = controller.Router_mod.GET(path)
