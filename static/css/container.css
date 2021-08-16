@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: auto;
+}
+
+.container_inline {
+    flex-direction: row;
+}
+
+.container_textend {
+    text-align: end;
+}
+
+.container_600 {
+    max-width: 600px;
+}
+
+.container_25p {
+    width: 25%;
+}
+
+.container_50p {
+    width: 50%;
+}
+
+.container_75p {
+    width: 75%;
+}
+
+.container_100p {
+    width: 100%;
+}

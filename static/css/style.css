@@ -5,6 +5,9 @@ main file with css styles
  /* import css styles for nav bar */
 @import "nav.css";
 @import "form.css";
+@import "panel.css";
+@import "container.css";
+
 
 
 /* base styles */

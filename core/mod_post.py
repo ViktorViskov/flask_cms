@@ -118,8 +118,8 @@ class POST_mod:
     # metod for create get request item
     def create_get_request_item(self):
         # user input
-        path = self.controller.request.form['path']
         page = self.controller.request.form['page']
+        path = page
 
         # make request to db
         self.controller.DB_mod.IO("INSERT INTO get VALUES ('%s','%s')" % (path, page), True)
@@ -173,7 +173,7 @@ class POST_mod:
         sql_name = self.controller.request.form['sql_name']
         sql_name = "'%s'" % sql_name if bool(sql_name) else 'null'
         path_to_file = "./src/pages/%s.html" % file_name
-        path_to_block_file = "./src/pages/%s_block.html" % file_name
+        path_to_block_file = "NULL"
 
         # write to file
         created_file = open(path_to_file, "w");
@@ -182,13 +182,19 @@ class POST_mod:
 
         # if type dynamic
         if page_type == 'dynamic':
+            # create correct variable
+            path_to_block_file = "./src/pages/%s_block.html" % file_name
+
             # write file block
             created_file = open(path_to_block_file, "w");
             created_file.write(file_block_content)
             created_file.close()
 
+            # create string to sql
+            path_to_block_file = "'%s'" % path_to_block_file
+
         # create page in db
-        self.controller.DB_mod.IO("INSERT INTO pages VALUES ('%s','%s','%s','%s','%s',%s)" % (page_path, page_title, page_type, path_to_file, path_to_block_file, sql_name) ,True)
+        self.controller.DB_mod.IO("INSERT INTO pages VALUES ('%s','%s','%s','%s',%s,%s)" % (page_path, page_title, page_type, path_to_file, path_to_block_file, sql_name) ,True)
 
         # redirect to nav menu edith
         return make_response(redirect("/admin"))

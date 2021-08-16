@@ -12,7 +12,7 @@
     transition: background 0.3s;
 }
 .nav-item:hover {
-    background: white;
+    background: lightcyan;
 }
 .nav-link {
     display: block;

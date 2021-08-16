@@ -1,0 +1,25 @@
+.panel-title {
+    text-align: center;
+    font-size: 30px;
+}
+
+.panel-list {
+    list-style: none;
+    padding: 0;
+}
+
+.panel-item {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.panel-link {
+    display: block;
+    padding: 20px 0;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.panel-link:hover {
+    background-color:lightcyan;
+}
