@@ -24,6 +24,7 @@ class Router_mod:
             'sql_edith':'sql_edith',
             'page_create':'page_create',
             'page_delete':'page_delete',
+
             }
 
         # static routes for get requests
@@ -66,26 +67,31 @@ class Router_mod:
                 },
             }
 
-        # static pages
-        self.static_pages = {
-            'admin':['admin','Admin panel','static_cookies','./static/pages/panel.html','', ''],
-            'login':['login','Login page','static','./static/pages/login.html','', ''],
-            'auth_fail':['auth_fail','Login or password not correct','static','./static/pages/auth_fail.html','', ''],
-            'nav_menu':['nav_menu','Edith navigation menu','dynamic_cookies','./static/pages/nav_menu_edith.html','./static/pages/nav_menu_edith_block.html', 'Nav items'],
-            'show_page':['show_page','Menu for enabling','dynamic_cookies','./static/pages/show_page.html','./static/pages/show_page_block.html', 'Pages'],
-            'hide_page':['hide_page','Menu for disabling pages','dynamic_cookies','./static/pages/hide_page.html','./static/pages/hide_page_block.html', 'Get items'],
-            'sql_edith':['sql_edith','Menu sql edithor','dynamic_cookies','./static/pages/sql_edith.html','./static/pages/sql_edith_block.html', 'Sql items'],
-            'page_create':['page_create','Menu sql edithor','static_cookies','./static/pages/page_create.html','', ''],
-            'page_delete':['page_delete','Menu sql edithor','dynamic_cookies','./static/pages/page_delete.html','./static/pages/page_delete_block.html', 'Pages'],
-            
-        }
-
         # static sql requests
         self.static_sql = {
             'Get items':'SELECT * FROM get',
             'Nav items':'SELECT * FROM nav_menu',
-            'Sql items':'SELECT * FROM sql_requests',
-            'Pages':'SELECT * FROM pages',
+            'Sql all':'SELECT * FROM sql_requests',
+            'Sql visible':'SELECT name FROM sql_requests WHERE NOT EXISTS (SELECT sql_name FROM pages WHERE sql_requests.name = sql_name)',
+            'Sql hidden':'SELECT name FROM sql_requests WHERE EXISTS (SELECT sql_name FROM pages WHERE sql_requests.name = sql_name)',
+            'Pages all':'SELECT * FROM pages',
+            'Pages visible':'SELECT pages.path FROM pages WHERE EXISTS (SELECT page FROM get WHERE pages.path = page)',
+            'Pages hidden': 'SELECT pages.path FROM pages WHERE NOT EXISTS (SELECT page FROM get WHERE pages.path = page)',
+        }
+
+        # static pages
+        self.static_pages = {
+            '/':['Main','Main page','static','./src/pages/main.html','', ''],
+            'admin':['admin','Admin panel','static_cookies','./static/pages/panel.html','', ''],
+            'login':['login','Login page','static','./static/pages/login.html','', ''],
+            'auth_fail':['auth_fail','Login or password not correct','static','./static/pages/auth_fail.html','', ''],
+            'nav_menu':['nav_menu','Edith navigation menu','dynamic_cookies','./static/pages/nav_menu_edith.html','./static/pages/nav_menu_edith_block.html', 'Nav items'],
+            'show_page':['show_page','Menu for enabling','dynamic_cookies','./static/pages/show_page.html','./static/pages/show_page_block.html', 'Pages hidden'],
+            'hide_page':['hide_page','Menu for disabling pages','dynamic_cookies','./static/pages/hide_page.html','./static/pages/hide_page_block.html', 'Get items'],
+            'sql_edith':['sql_edith','Menu sql edithor','dynamic_cookies','./static/pages/sql_edith.html','./static/pages/sql_edith_block.html', 'Sql visible'],
+            'page_create':['page_create','Menu sql edithor','dynamic_cookies','./static/pages/page_create.html','./static/pages/page_create_block.html', 'Sql all'],
+            'page_delete':['page_delete','Menu sql edithor','dynamic_cookies','./static/pages/page_delete.html','./static/pages/page_delete_block.html', 'Pages hidden'],
+            
         }
 
     # for GET requests
@@ -110,9 +116,9 @@ class Router_mod:
             # load page
             page = self.controller.DB_mod.IO("SELECT * FROM get WHERE path = '%s'" %path)
 
-            # if is not pressent load error page
+            # if is not pressent return not found string
             if len(page) != 1:
-                page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = 'not_found'")
+                return "Page not found"
 
             # show page
             else:

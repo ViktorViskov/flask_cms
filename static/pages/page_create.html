@@ -1,5 +1,5 @@
 <div class="">
-    <form action="create_page" method="post" id="file_content" style="display: flex; flex-direction: column;">
+    <form action="page_create" method="post" id="file_content" style="display: flex; flex-direction: column;">
         <label for="page_path">Page path</label>
         <input type="text" name="page_path" id="page_path"> 
 
@@ -7,17 +7,22 @@
         <input type="text" name="page_title" id="page_title"> 
 
         <label for="page_type">Page type</label>
-        <input type="text" name="page_type" id="page_type"> 
-
-        <label for="file_name">File name</label>
-        <input type="text" name="file_name" id="file_name">
+        <select type="text" name="page_type" id="page_type">
+            <option value="static" selected>Static</option>
+            <option value="dynamic">Dynamic</option>
+        </select>
 
         <label for="file_content">File content</label>
-        <textarea name="file_content" id="" cols="50" rows="20"></textarea>
+        <textarea name="file_content" id="file_content" cols="50" rows="20" placeholder="Here is html code"></textarea>
+
+        <label for="block_content">Block content</label>
+        <textarea name="block_content" id="block_content" cols="50" rows="20" placeholder="Here is html code"></textarea>
         
         <label for="sql_name">SQL name</label>
-        <input type="text" name="sql_name" id="sql_name">
+        <select type="text" name="sql_name" id="sql_name">
+            <option value="" selected></option>
+            !!ITEMS!!
+        </select>
         <input type="submit" value="Create">
     </form>
 </div>
-!!ITEMS!!

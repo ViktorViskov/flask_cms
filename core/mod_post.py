@@ -3,6 +3,7 @@
 # 
 
 # needed libs
+import os
 from flask.templating import render_template_string
 from flask import make_response, redirect
 
@@ -48,6 +49,10 @@ class POST_mod:
         # create page file
         elif action == 'page_create':
             page_to_print = self.create_page()
+        # delete page file
+
+        elif action == 'page_delete':
+            page_to_print = self.delete_page()
 
         # path not found
         else:
@@ -162,25 +167,50 @@ class POST_mod:
         page_path = self.controller.request.form['page_path']
         page_title = self.controller.request.form['page_title']
         page_type = self.controller.request.form['page_type']
-        file_name = self.controller.request.form['file_name']
+        file_name = page_path
         file_content = self.controller.request.form['file_content']
+        file_block_content = self.controller.request.form['block_content']
         sql_name = self.controller.request.form['sql_name']
         sql_name = "'%s'" % sql_name if bool(sql_name) else 'null'
         path_to_file = "./src/pages/%s.html" % file_name
+        path_to_block_file = "./src/pages/%s_block.html" % file_name
 
         # write to file
         created_file = open(path_to_file, "w");
         created_file.write(file_content)
         created_file.close()
 
-        # create page in db
-        self.controller.DB_mod.IO("INSERT INTO pages VALUES ('%s','%s','%s','%s',null,%s)" % (page_path, page_title, page_type, path_to_file,sql_name) ,True)
+        # if type dynamic
+        if page_type == 'dynamic':
+            # write file block
+            created_file = open(path_to_block_file, "w");
+            created_file.write(file_block_content)
+            created_file.close()
 
-        # add to get table
-        self.controller.DB_mod.IO("INSERT INTO get VALUES ('%s','%s')" % (page_path, page_path) ,True)
-        
-        # add to nav menu
-        self.controller.DB_mod.IO("INSERT INTO nav_menu VALUES ('%s','%s')" % (page_path, page_path) ,True)
+        # create page in db
+        self.controller.DB_mod.IO("INSERT INTO pages VALUES ('%s','%s','%s','%s','%s',%s)" % (page_path, page_title, page_type, path_to_file, path_to_block_file, sql_name) ,True)
 
         # redirect to nav menu edith
-        return make_response(redirect("/create_page"))
+        return make_response(redirect("/admin"))
+
+    # metod for delete sql request item
+    def delete_page(self):
+        # user input
+        name = self.controller.request.form['path']
+
+        # load info about page
+        page_info = self.controller.DB_mod.IO("SELECT * FROM pages WHERE path = '%s'" % (name))[0]
+
+        # Delete files
+
+        # delete main file
+        os.remove(page_info[3])
+        # delete block file
+        if page_info[4]:
+            os.remove(page_info[4])
+
+        # make request to db
+        self.controller.DB_mod.IO("DELETE FROM pages WHERE path = '%s'" % (name), True)
+
+        # redirect to nav menu edith
+        return make_response(redirect("/page_delete"))
