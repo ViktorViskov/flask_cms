@@ -17,6 +17,11 @@
     font-size: 20px;
 }
 
+.form-text-area {
+    resize: none;
+    outline: none;
+}
+
 .form-input {
     font-size: 20px;
     border: none;

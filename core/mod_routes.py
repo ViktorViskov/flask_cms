@@ -72,7 +72,7 @@ class Router_mod:
             'Get items':'SELECT * FROM get',
             'Nav items':'SELECT * FROM nav_menu',
             'Sql all':'SELECT * FROM sql_requests',
-            'Sql visible':'SELECT name FROM sql_requests WHERE NOT EXISTS (SELECT sql_name FROM pages WHERE sql_requests.name = sql_name)',
+            'Sql visible':'SELECT name, sql_request FROM sql_requests WHERE NOT EXISTS (SELECT sql_name FROM pages WHERE sql_requests.name = sql_name)',
             'Sql hidden':'SELECT name FROM sql_requests WHERE EXISTS (SELECT sql_name FROM pages WHERE sql_requests.name = sql_name)',
             'Pages all':'SELECT * FROM pages',
             'Pages visible':'SELECT pages.path FROM pages WHERE EXISTS (SELECT page FROM get WHERE pages.path = page)',
