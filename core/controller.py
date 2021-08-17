@@ -28,7 +28,11 @@ class Controller:
         self.POST_mod = core.mod_post.POST_mod(self)
 
         # 2 level init
-        self.Flask_mod = core.mod_flask.Flask_mod(self,"Test application", "0.0.0.0", 5000, True)
+        # debug mode
+        self.Flask_mod = core.mod_flask.Flask_mod(self,main_config['app_name'], main_config['app_address'], int(main_config['app_port']), True)
+
+        # without debug mode
+        # self.Flask_mod = core.mod_flask.Flask_mod(self,main_config['app_name'], main_config['app_address'], int(main_config['app_port']))
 
     def config_processing(self, config_file_lines):
 
@@ -38,7 +42,7 @@ class Controller:
         # processing
         for item in config_file_lines:
             splittet_string = item.split("=")
-            result[splittet_string[0]] = splittet_string[1]
+            result[splittet_string[0]] = splittet_string[1].strip()
 
         # return result
         return result
