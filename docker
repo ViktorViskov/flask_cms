@@ -1,0 +1,1 @@
+docker run -d --name flask -p 80:80 flask-cms /bin/sh -c 'cd /flask_cms; ./web_app.py'
